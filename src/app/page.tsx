@@ -9,11 +9,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Suspense } from "react";
+import { fetchSongs } from "@/lib/data";
 
-export default function Home() {
+export default async function Home() {
+  const songs = await fetchSongs();
   return (
-    <main className="w-full mt-20">
+    <main className="w-full py-20">
       <div className="m-auto flex justify-between w-2/3">
         <h1 className="text-2xl">Your songs</h1>
         <Dialog>
@@ -30,7 +31,7 @@ export default function Home() {
           </DialogContent>
         </Dialog>
       </div>
-      <SongsDisplay />
+      <SongsDisplay songs={songs} />
     </main>
   );
 }

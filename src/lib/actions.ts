@@ -1,14 +1,12 @@
 "use server";
 
-import { PrismaClient, type Song } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { UploadFormSchema } from "./schemas/uploadFormSchema";
 import fs from "fs";
-import { v4 } from "uuid";
-
-const prisma = new PrismaClient();
+import { prisma } from "../../prisma/client";
 
 export async function uploadSong(formData: FormData) {
+  // TODO: error handling
   const validatedFields = UploadFormSchema.safeParse({
     title: formData.get("title"),
     artist: formData.get("artist"),
@@ -34,7 +32,6 @@ export async function uploadSong(formData: FormData) {
   });
 
   await saveFile(file, song.id);
-  console.table(song);
   revalidatePath("/");
 }
 

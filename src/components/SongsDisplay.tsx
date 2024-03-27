@@ -1,34 +1,39 @@
-import { fetchSongs } from "@/lib/data";
+"use client";
+import type { Song } from "@prisma/client";
+import { PlayerProvider } from "@/lib/contexts/PlayerContext";
+import { AudioPlayer } from "./AudioPlayer";
+import { SongComponent } from "./SongComponent";
 
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { AudioPlayer } from "./AudioPlayer";
+  Table,
+  TableBody,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
-export async function SongsDisplay() {
-  const songs = await fetchSongs();
+export function SongsDisplay({ songs }: { songs: Song[] }) {
   return (
-    <div className="mt-20 flex gap-5 flex-wrap justify-center">
-      {songs.map((song, i) => {
-        return (
-          <Card key={i} className="w-[380px]">
-            <CardHeader>
-              <CardTitle>{song.title}</CardTitle>
-              <CardDescription>
-                {song.artist} • {song.released}
-              </CardDescription>
-              <CardContent className="w-100">
-                <AudioPlayer song={song.id} />
-              </CardContent>
-            </CardHeader>
-          </Card>
-        );
-      })}
-    </div>
+    <PlayerProvider>
+      <div className="py-16 flex gap-5 flex-wrap justify-center w-2/3 m-auto">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[100px]"></TableHead>
+              <TableHead>Title</TableHead>
+              <TableHead>Artist</TableHead>
+              <TableHead>Release Year</TableHead>
+              <TableHead className="text-right">Date Added</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {songs.map((song) => (
+              <SongComponent song={song} key={song.id} />
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+      <AudioPlayer />
+    </PlayerProvider>
   );
 }

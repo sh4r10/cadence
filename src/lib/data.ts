@@ -1,8 +1,6 @@
 "use server";
 
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { prisma } from "../../prisma/client";
 
 export async function fetchSongs() {
   const res = await prisma.song.findMany({
