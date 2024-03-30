@@ -15,7 +15,9 @@ export function AudioPlayer() {
   const { isPlaying, nowPlaying, togglePlay } = usePlayer();
   const playerRef = useRef<HTMLAudioElement>(null);
   const [currTime, setCurrTime] = useState<number>(0);
-  const [volume, setVolume] = useState<number>(100);
+  const [volume, setVolume] = useState<number>(
+    Number(localStorage.getItem("volume")) || 100,
+  );
 
   useEffect(() => {
     if (playerRef.current && isPlaying && nowPlaying != null) {
@@ -44,6 +46,11 @@ export function AudioPlayer() {
     const time = (step / 100) * playerRef.current?.duration;
     playerRef.current.currentTime = time;
     setCurrTime(time);
+  };
+
+  const updateVolume = (interval: number[]) => {
+    localStorage.setItem("volume", interval[0].toString());
+    setVolume(interval[0]);
   };
 
   const formatTime = (time: number | undefined) => {
@@ -98,7 +105,7 @@ export function AudioPlayer() {
               </p>
             </div>
           </div>
-          <div className="gap-1 w-44 flex items-center justify-between">
+          <div className="gap-1 w-44 flex items-center justify-end">
             {volume === 0 ? (
               <VolumeX />
             ) : volume <= 40 ? (
@@ -111,7 +118,7 @@ export function AudioPlayer() {
               value={[volume]}
               max={100}
               step={1}
-              onValueChange={(vol) => setVolume(vol[0])}
+              onValueChange={updateVolume}
             />
           </div>
         </div>
