@@ -133,6 +133,7 @@ export function AudioPlayer() {
       <audio
         onTimeUpdate={() => setCurrTime(playerRef.current?.currentTime ?? 0)}
         preload="none"
+        onEnded={playNext}
         ref={playerRef}
       ></audio>
     </>

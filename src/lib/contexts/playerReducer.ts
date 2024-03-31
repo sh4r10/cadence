@@ -57,6 +57,7 @@ export const playerReducer = (state: State, action: Action) => {
           ...state,
           nowPlaying: state.trackList[nextIndex],
           currentTrack: nextIndex,
+          isPlaying: true,
         };
       } else {
         return { ...state, nowPlaying: state.trackList[0], currentTrack: 0 };
@@ -71,7 +72,12 @@ export const playerReducer = (state: State, action: Action) => {
           currentTrack: previousIndex,
         };
       } else {
-        return { ...state, nowPlaying: state.trackList[0], currentTrack: 0 };
+        return {
+          ...state,
+          nowPlaying: state.trackList[0],
+          currentTrack: 0,
+          isPlaying: true,
+        };
       }
     default:
       return state;
