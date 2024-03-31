@@ -1,3 +1,4 @@
+"use client";
 import { usePlayer } from "@/lib/contexts/PlayerContext";
 import { useEffect, useRef, useState } from "react";
 import { Slider } from "./ui/slider";
@@ -20,6 +21,7 @@ export function AudioPlayer() {
   );
 
   useEffect(() => {
+    console.log("hello");
     if (playerRef.current && isPlaying && nowPlaying != null) {
       if (!playerRef.current.src.includes(nowPlaying.id)) {
         playerRef.current.src = `/play/${nowPlaying?.id}`;
@@ -55,6 +57,7 @@ export function AudioPlayer() {
 
   const formatTime = (time: number | undefined) => {
     // TODO: add hours
+    // TODO: weird bug where 00:60 shows up for a short amount
     if (!time) return "00:00";
     const minutes = Math.floor(time / 60);
     const seconds = Math.round(time % 60);
@@ -128,7 +131,6 @@ export function AudioPlayer() {
         preload="none"
         ref={playerRef}
       ></audio>
-      ;
     </>
   );
 }

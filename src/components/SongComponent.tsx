@@ -22,7 +22,7 @@ export function SongComponent({ song }: { song: Song }) {
 
   return (
     <TableRow
-      className={clsx("font-medium", {
+      className={clsx("font-normal", {
         "bg-gray-200 hover:bg-gray-200":
           nowPlaying?.id === song.id && isPlaying,
       })}
@@ -39,7 +39,7 @@ export function SongComponent({ song }: { song: Song }) {
           )}
         </button>
       </TableCell>
-      <TableCell>{song.title}</TableCell>
+      <TableCell className="font-medium">{song.title}</TableCell>
       <TableCell>{song.artist}</TableCell>
       <TableCell>{song.released}</TableCell>
       <TableCell className="text-right">
