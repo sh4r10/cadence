@@ -1,3 +1,4 @@
+"use server";
 import { Sidebar } from "@/components/Sidebar";
 import { SongsDisplay } from "@/components/SongsDisplay";
 import UploadForm from "@/components/forms/uploadForm";

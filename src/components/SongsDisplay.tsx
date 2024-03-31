@@ -9,8 +9,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { usePlayer } from "@/lib/contexts/PlayerContext";
 
 export function SongsDisplay({ songs }: { songs: Song[] }) {
+  const { playNew } = usePlayer();
+
+  const playSong = (song: Song) => {
+    playNew(song, songs);
+  };
+
   return (
     <div className="py-16 flex gap-5 flex-wrap justify-center w-2/3 m-auto">
       <Table>
@@ -25,7 +32,7 @@ export function SongsDisplay({ songs }: { songs: Song[] }) {
         </TableHeader>
         <TableBody>
           {songs.map((song) => (
-            <SongComponent song={song} key={song.id} />
+            <SongComponent song={song} playSong={playSong} key={song.id} />
           ))}
         </TableBody>
       </Table>

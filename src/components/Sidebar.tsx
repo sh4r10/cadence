@@ -37,15 +37,13 @@ export function Sidebar() {
       <div className="w-full">
         {Object.keys(sections).map((key) => {
           return (
-            <>
-              <p key={key} className="font-semibold text-xl mr-2 mb-4">
-                {key}
-              </p>
-              {sections[key].map((link, i) => {
+            <div key={key}>
+              <p className="font-semibold text-xl mr-2 mb-4">{key}</p>
+              {sections[key].map((link) => {
                 const active = link.href === pathname;
                 return (
                   <Link
-                    key={link.href + i}
+                    key={link.href}
                     href={link.href}
                     className={clsx(
                       "w-full flex items-center justify-start p-2 gap-2 text-sm hover:bg-gray-100 rounded mb-1",
@@ -54,12 +52,12 @@ export function Sidebar() {
                       },
                     )}
                   >
-                    <link.icon key={link.href + "icon" + i} size={16} />
-                    <p key={link.name + i}>{link.name}</p>
+                    <link.icon size={16} />
+                    <p>{link.name}</p>
                   </Link>
                 );
               })}
-            </>
+            </div>
           );
         })}
       </div>

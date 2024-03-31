@@ -1,13 +1,16 @@
 import type { Metadata } from "next";
-import { Manrope } from "next/font/google";
+// import { Manrope } from "next/font/google";
+import { GeistSans } from "geist/font/sans";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import { PlayerProvider } from "@/lib/contexts/PlayerContext";
+import { AudioPlayer } from "@/components/AudioPlayer";
 
-const manrope = Manrope({
-  weight: ["400", "700"],
-  subsets: ["latin"],
-  variable: "--font-sans",
-});
+// const manrope = Manrope({
+//   weight: ["400", "700"],
+//   subsets: ["latin"],
+//   variable: "--font-sans",
+// });
 
 export const metadata: Metadata = {
   title: {
@@ -27,10 +30,13 @@ export default function RootLayout({
       <body
         className={cn(
           "min-h-screen bg-background font-sans antialiased",
-          manrope.variable,
+          GeistSans.className,
         )}
       >
-        {children}
+        <PlayerProvider>
+          {children}
+          <AudioPlayer />
+        </PlayerProvider>
       </body>
     </html>
   );

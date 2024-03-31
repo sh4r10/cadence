@@ -13,15 +13,18 @@ import {
 } from "lucide-react";
 
 export function AudioPlayer() {
-  const { isPlaying, nowPlaying, togglePlay } = usePlayer();
+  const { isPlaying, nowPlaying, togglePlay, playNext, playPrevious } =
+    usePlayer();
   const playerRef = useRef<HTMLAudioElement>(null);
   const [currTime, setCurrTime] = useState<number>(0);
-  const [volume, setVolume] = useState<number>(
-    Number(localStorage.getItem("volume")) || 100,
-  );
+  const [volume, setVolume] = useState<number>(100);
+
+  // set volume from localstorage
+  useEffect(() => {
+    setVolume(Number(localStorage.getItem("volume")) || 100);
+  }, []);
 
   useEffect(() => {
-    console.log("hello");
     if (playerRef.current && isPlaying && nowPlaying != null) {
       if (!playerRef.current.src.includes(nowPlaying.id)) {
         playerRef.current.src = `/play/${nowPlaying?.id}`;
@@ -70,15 +73,16 @@ export function AudioPlayer() {
     <>
       {nowPlaying && (
         <div className="w-full fixed flex align-center justify-between bg-black text-white bottom-0 left-0 py-3 px-5">
-          <div className="flex flex-col justify-center items-start">
+          <div className="flex flex-col flex-nowrap justify-center items-start max-w-40 w-full">
             <p className="text-gray-400 text-xs">Now Playing</p>
-            <p className="text-gray-300">
+            <p className="text-gray-300 text-nowrap">
+              {/* implement looping text */}
               {nowPlaying?.title} • {nowPlaying?.artist}
             </p>
           </div>
           <div className="w-1/3 flex flex-col gap-2 items-center justify-center">
             <div className="w-full gap-8 flex flex-row items-center justify-center">
-              <button>
+              <button onClick={playPrevious}>
                 <SkipBack />
               </button>
               <button onClick={togglePlay}>
@@ -88,7 +92,7 @@ export function AudioPlayer() {
                   <PauseIcon fill="white" />
                 )}
               </button>
-              <button>
+              <button onClick={playNext}>
                 <SkipForward />
               </button>
             </div>

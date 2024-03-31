@@ -7,15 +7,19 @@ import type { Song } from "@prisma/client";
 import clsx from "clsx";
 import { PauseIcon, PlayIcon } from "lucide-react";
 
-export function SongComponent({ song }: { song: Song }) {
-  const { togglePlay, playNew, nowPlaying, isPlaying } = usePlayer();
+export function SongComponent({
+  song,
+  playSong,
+}: {
+  song: Song;
+  playSong: (song: Song) => {};
+}) {
+  const { togglePlay, nowPlaying, isPlaying } = usePlayer();
 
   const handleClick = () => {
     if (nowPlaying?.id !== song.id) {
-      console.log("playing new");
-      playNew(song);
+      playSong(song);
     } else if (nowPlaying !== null) {
-      console.log("playing same");
       togglePlay();
     }
   };
