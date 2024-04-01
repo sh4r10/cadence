@@ -3,10 +3,11 @@ import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
 import "./globals.css";
 import { cn } from "@/lib/utils";
-import { PlayerProvider } from "@/lib/contexts/PlayerContext";
 import { AudioPlayer } from "@/components/AudioPlayer";
+import { Sidebar } from "@/components/Sidebar";
+import { PlayerProvider } from "@/lib/contexts/PlayerProvider";
 
-// const manrope = Manrope({
+// const ope = Manrope({
 //   weight: ["400", "700"],
 //   subsets: ["latin"],
 //   variable: "--font-sans",
@@ -29,12 +30,15 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={cn(
-          "min-h-screen bg-background font-sans antialiased",
+          "min-h-screen bg-background antialiased",
           GeistSans.className,
         )}
       >
         <PlayerProvider>
-          {children}
+          <div className="flex">
+            <Sidebar />
+            {children}
+          </div>
           <AudioPlayer />
         </PlayerProvider>
       </body>

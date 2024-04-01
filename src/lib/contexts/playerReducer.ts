@@ -10,17 +10,17 @@ export const PLAYER_ACTIONS = {
 
 type ActionType = (typeof PLAYER_ACTIONS)[keyof typeof PLAYER_ACTIONS];
 
-interface State {
+export interface State {
   isPlaying: boolean;
   nowPlaying: Song | null;
   trackList: Song[] | null;
   currentTrack: number;
 }
 
-interface Action {
+export interface Action {
   type: ActionType;
   payload?: {
-    song?: Song;
+    song?: number;
     trackList: Song[];
   };
 }
@@ -32,23 +32,21 @@ export const initialState: State = {
   currentTrack: 0,
 };
 
-export const playerReducer = (state: State, action: Action) => {
+export const playerReducer = (state: State, action: Action): State => {
   const { type, payload } = action;
   switch (type) {
     case PLAYER_ACTIONS.PLAY_NEW:
       return {
         ...state,
         isPlaying: true,
-        nowPlaying: payload?.song,
-        trackList: payload?.trackList,
-        currentTrack: payload?.trackList.findIndex(
-          (el) => el.id === payload.song?.id,
-        ),
+        nowPlaying: payload?.trackList[payload?.song ?? 0] || null,
+        trackList: payload?.trackList || [],
+        currentTrack: payload?.song || 0,
       };
     case PLAYER_ACTIONS.TOGGLE_PLAY:
       return { ...state, isPlaying: !state.isPlaying };
     case PLAYER_ACTIONS.UPDATE_TRACK_LIST:
-      return { ...state, trackList: action.payload?.trackList };
+      return { ...state, trackList: action.payload?.trackList || [] };
     case PLAYER_ACTIONS.NEXT_TRACK:
       if (!state.trackList) return { ...state };
       let nextIndex = state.currentTrack + 1;

@@ -9,12 +9,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { usePlayer } from "@/lib/contexts/PlayerContext";
+import { usePlayer } from "@/lib/contexts/usePlayer";
 
 export function SongsDisplay({ songs }: { songs: Song[] }) {
   const { playNew } = usePlayer();
 
-  const playSong = (song: Song) => {
+  const playSong = (song: number) => {
     playNew(song, songs);
   };
 
@@ -31,8 +31,13 @@ export function SongsDisplay({ songs }: { songs: Song[] }) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {songs.map((song) => (
-            <SongComponent song={song} playSong={playSong} key={song.id} />
+          {songs.map((song, i) => (
+            <SongComponent
+              index={i}
+              song={song}
+              playSong={playSong}
+              key={song.id}
+            />
           ))}
         </TableBody>
       </Table>

@@ -1,24 +1,23 @@
-import { Button } from "./ui/button";
-
 import { TableCell, TableRow } from "@/components/ui/table";
-
-import { usePlayer } from "@/lib/contexts/PlayerContext";
+import { usePlayer } from "@/lib/contexts/usePlayer";
 import type { Song } from "@prisma/client";
 import clsx from "clsx";
 import { PauseIcon, PlayIcon } from "lucide-react";
 
 export function SongComponent({
   song,
+  index,
   playSong,
 }: {
   song: Song;
-  playSong: (song: Song) => {};
+  index: number;
+  playSong: (song: number) => void;
 }) {
   const { togglePlay, nowPlaying, isPlaying } = usePlayer();
 
   const handleClick = () => {
     if (nowPlaying?.id !== song.id) {
-      playSong(song);
+      playSong(index);
     } else if (nowPlaying !== null) {
       togglePlay();
     }

@@ -1,6 +1,8 @@
 import { createReadStream, statSync } from "fs";
 import { resolve } from "path";
 
+// TODO: implement better streaming
+// TODO: current streaming not compatible with chrome
 export async function GET(req: Request, route: { params: { id: string } }) {
   const filePath = resolve("uploads", route.params.id + ".mp3");
   try {
@@ -9,6 +11,7 @@ export async function GET(req: Request, route: { params: { id: string } }) {
     // Create a read stream from the file
     const stream = createReadStream(filePath);
     // Create a response object
+    // @ts-ignore
     const res = new Response(stream, {
       headers: {
         "Content-Type": "audio/mpeg",

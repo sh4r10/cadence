@@ -1,5 +1,4 @@
 "use client";
-import { usePlayer } from "@/lib/contexts/PlayerContext";
 import { useEffect, useRef, useState } from "react";
 import { Slider } from "./ui/slider";
 import {
@@ -11,6 +10,7 @@ import {
   Volume2,
   VolumeX,
 } from "lucide-react";
+import { usePlayer } from "@/lib/contexts/usePlayer";
 
 export function AudioPlayer() {
   const { isPlaying, nowPlaying, togglePlay, playNext, playPrevious } =

@@ -33,7 +33,7 @@ const sections: SectionsType = {
 export function Sidebar() {
   const pathname = usePathname();
   return (
-    <aside className="h-screen w-80 border-r-2 py-10 px-6">
+    <aside className="h-screen max-w-80 w-full border-r-2 py-10 px-6">
       <div className="w-full">
         {Object.keys(sections).map((key) => {
           return (
