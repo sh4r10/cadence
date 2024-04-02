@@ -12,5 +12,10 @@ export const UploadFormSchema = z.object({
   released: z.coerce
     .number()
     .gt(1859, { message: "Year must be greater than 1859" }),
+  playlist: z.string().optional().default(""),
   file: z.custom<File>((val) => val instanceof File),
+});
+
+export const PlaylistSchema = z.object({
+  name: z.string({ invalid_type_error: "Name cannot be empty" }).min(1).max(32),
 });

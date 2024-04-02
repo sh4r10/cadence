@@ -1,17 +1,14 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { UploadFormSchema } from "./schemas/uploadFormSchema";
+import { PlaylistSchema, UploadFormSchema } from "./schemas/uploadFormSchema";
 import fs from "fs";
 import { prisma } from "../../prisma/client";
 
-export async function uploadSong(formData: FormData) {
+export async function createPlaylist(formData: FormData) {
   // TODO: error handling
-  const validatedFields = UploadFormSchema.safeParse({
-    title: formData.get("title"),
-    artist: formData.get("artist"),
-    released: formData.get("released"),
-    file: formData.get("file"),
+  const validatedFields = PlaylistSchema.safeParse({
+    name: formData.get("name"),
   });
 
   if (!validatedFields.success) {
@@ -20,14 +17,55 @@ export async function uploadSong(formData: FormData) {
     };
   }
 
-  const { title, artist, released, file } = validatedFields.data;
+  const { name } = validatedFields.data;
 
+  const playlist = await prisma.playlist.create({
+    data: {
+      name,
+      ownerId: "thefirst",
+    },
+  });
+
+  // TODO: more fine tuned revalidation
+  revalidatePath("/");
+}
+
+export async function uploadSong(formData: FormData) {
+  // TODO: error handling
+  console.log(formData.get("playlist"));
+  const validatedFields = UploadFormSchema.safeParse({
+    title: formData.get("title"),
+    artist: formData.get("artist"),
+    released: formData.get("released"),
+    playlist: formData.get("playlist"),
+    file: formData.get("file"),
+  });
+
+  if (!validatedFields.success) {
+    console.log("validation failed");
+    console.log(validatedFields.error.flatten().fieldErrors);
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+    };
+  }
+
+  const { title, artist, released, file, playlist } = validatedFields.data;
+
+  // TODO: add owner checking for playlist
   const song = await prisma.song.create({
     data: {
       title: title,
       artist: artist,
       released: released,
       ownerId: "thefirst",
+      playlists:
+        playlist === ""
+          ? {}
+          : {
+              connect: {
+                id: playlist,
+              },
+            },
     },
   });
 
