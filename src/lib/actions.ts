@@ -1,9 +1,39 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { PlaylistSchema, UploadFormSchema } from "./schemas/uploadFormSchema";
+import {
+  DeleteSongSchema,
+  PlaylistSchema,
+  UploadFormSchema,
+} from "./schemas/uploadFormSchema";
 import fs from "fs";
 import { prisma } from "../../prisma/client";
+
+export async function deleteSong(formData: FormData) {
+  // TODO: error handling
+  const validatedFields = DeleteSongSchema.safeParse({
+    song: formData.get("song"),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+    };
+  }
+
+  const { song } = validatedFields.data;
+
+  await prisma.song.delete({
+    where: {
+      id: song,
+    },
+  });
+
+  //TODO test
+  await fs.promises.rm(`uploads/${song}.mp3`);
+  // TODO: more fine tuned revalidation
+  revalidatePath("/");
+}
 
 export async function createPlaylist(formData: FormData) {
   // TODO: error handling
@@ -32,7 +62,6 @@ export async function createPlaylist(formData: FormData) {
 
 export async function uploadSong(formData: FormData) {
   // TODO: error handling
-  console.log(formData.get("playlist"));
   const validatedFields = UploadFormSchema.safeParse({
     title: formData.get("title"),
     artist: formData.get("artist"),
@@ -59,7 +88,7 @@ export async function uploadSong(formData: FormData) {
       released: released,
       ownerId: "thefirst",
       playlists:
-        playlist === ""
+        playlist === null
           ? {}
           : {
               connect: {
@@ -81,5 +110,77 @@ async function saveFile(file: File, id: string) {
   } catch (error) {
     console.error("Error saving file:", error);
     throw error;
+  }
+}
+
+export async function addSongToPlaylist(song: string, playlist: string) {
+  try {
+    if (!song) return { errors: ["Missing Song ID"] };
+    if (!playlist) return { errors: ["Missing Playlist ID"] };
+
+    const playlistObj = await prisma.playlist.findUnique({
+      where: { id: playlist },
+    });
+    const songObj = await prisma.song.findUnique({
+      where: { id: song },
+      select: { playlists: true },
+    });
+
+    if (!songObj) return { errors: ["Invalid Song ID"] };
+    if (!playlistObj) return { errors: ["Invalid Playlist ID"] };
+
+    await prisma.song.update({
+      where: {
+        id: song,
+      },
+      data: {
+        playlists: {
+          connect: {
+            id: playlist,
+          },
+        },
+      },
+    });
+
+    revalidatePath("/");
+  } catch (error) {
+    console.error("Error:", error);
+    return { errors: ["Something went wrong"] };
+  }
+}
+
+export async function removeSongFromPlaylist(song: string, playlist: string) {
+  try {
+    if (!song) return { errors: ["Missing Song ID"] };
+    if (!playlist) return { errors: ["Missing Playlist ID"] };
+
+    const playlistObj = await prisma.playlist.findUnique({
+      where: { id: playlist },
+    });
+    const songObj = await prisma.song.findUnique({
+      where: { id: song },
+      select: { playlists: true },
+    });
+
+    if (!songObj) return { errors: ["Invalid Song ID"] };
+    if (!playlistObj) return { errors: ["Invalid Playlist ID"] };
+
+    await prisma.song.update({
+      where: {
+        id: song,
+      },
+      data: {
+        playlists: {
+          disconnect: {
+            id: playlist,
+          },
+        },
+      },
+    });
+
+    revalidatePath("/");
+  } catch (error) {
+    console.error("Error:", error);
+    return { errors: ["Something went wrong"] };
   }
 }

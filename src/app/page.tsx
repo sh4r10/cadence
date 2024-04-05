@@ -10,10 +10,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { fetchSongs } from "@/lib/data";
+import { fetchPlaylists, fetchSongs } from "@/lib/data";
 
 export default async function Home() {
-  const songs = await fetchSongs();
+  const [songs, playlists] = await Promise.all([
+    fetchSongs(),
+    fetchPlaylists(),
+  ]);
+
+  console.log(songs[14]);
   return (
     <main className="w-full py-20">
       <div className="m-auto flex justify-between w-2/3">
@@ -32,7 +37,7 @@ export default async function Home() {
           </DialogContent>
         </Dialog>
       </div>
-      <SongsDisplay songs={songs} />
+      <SongsDisplay songs={songs} playlists={playlists} />
     </main>
   );
 }

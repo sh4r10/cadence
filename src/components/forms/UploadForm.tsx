@@ -10,7 +10,7 @@ export default function UploadForm({ playlistId }: { playlistId?: string }) {
       <Input type="text" name="title" placeholder="Title" />
       <Input type="text" name="artist" placeholder="Artist" />
       <Input type="text" name="released" placeholder="Release Year" />
-      {playlistId && <Input type="text" name="playlist" value={playlistId} />}
+      {playlistId && <Input type="hidden" name="playlist" value={playlistId} />}
       <Input type="file" name="file" />
       <Button type="submit">Submit</Button>
     </form>

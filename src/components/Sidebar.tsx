@@ -1,13 +1,11 @@
-"use client";
+"use server";
 
-import clsx from "clsx";
-import { ListMusicIcon, LucideIcon, Music2Icon } from "lucide-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { getTop5Playlists } from "@/lib/data";
+import { SidebarLink } from "./ui/sidebar-link";
 
 interface LinkType {
   name: string;
-  icon: LucideIcon;
+  icon: string;
   href: string;
 }
 
@@ -19,19 +17,19 @@ const sections: SectionsType = {
   "Your Library": [
     {
       name: "Songs",
-      icon: Music2Icon,
+      icon: "music2",
       href: "/",
     },
     {
       name: "Playlists",
-      icon: ListMusicIcon,
+      icon: "listMusic",
       href: "/playlists",
     },
   ],
 };
 
-export function Sidebar() {
-  const pathname = usePathname();
+export async function Sidebar() {
+  const playlists = await getTop5Playlists();
   return (
     <aside className="h-screen max-w-80 w-full border-r-2 py-10 px-6">
       <div className="w-full">
@@ -39,27 +37,25 @@ export function Sidebar() {
           return (
             <div key={key}>
               <p className="font-semibold text-xl mr-2 mb-4">{key}</p>
-              {sections[key].map((link) => {
-                const active = link.href === pathname;
-                return (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className={clsx(
-                      "w-full flex items-center justify-start p-2 gap-2 text-sm hover:bg-gray-100 rounded mb-1",
-                      {
-                        "bg-gray-100 hover:bg-gray-100": active,
-                      },
-                    )}
-                  >
-                    <link.icon size={16} />
-                    <p>{link.name}</p>
-                  </Link>
-                );
-              })}
+              {sections[key].map((link) => (
+                <SidebarLink key={link.href} link={link} />
+              ))}
             </div>
           );
         })}
+        <div>
+          <p className="font-semibold text-xl mr-2 mb-4 mt-10">Playlists</p>
+          {playlists.map((playlist) => (
+            <SidebarLink
+              key={playlist.id}
+              link={{
+                name: playlist.name,
+                href: `/playlists/${playlist.id}`,
+                icon: "listMusic",
+              }}
+            />
+          ))}
+        </div>
       </div>
     </aside>
   );

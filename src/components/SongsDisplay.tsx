@@ -1,5 +1,5 @@
 "use client";
-import type { Song } from "@prisma/client";
+import type { Playlist, Song } from "@prisma/client";
 import { SongComponent } from "./SongComponent";
 
 import {
@@ -10,8 +10,15 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { usePlayer } from "@/lib/contexts/usePlayer";
+import { SongWithPlaylists } from "@/lib/data";
 
-export function SongsDisplay({ songs }: { songs: Song[] }) {
+export function SongsDisplay({
+  songs,
+  playlists,
+}: {
+  songs: SongWithPlaylists[];
+  playlists: Playlist[];
+}) {
   const { playNew } = usePlayer();
 
   const playSong = (song: number) => {
@@ -36,6 +43,7 @@ export function SongsDisplay({ songs }: { songs: Song[] }) {
               index={i}
               song={song}
               playSong={playSong}
+              playlists={playlists}
               key={song.id}
             />
           ))}

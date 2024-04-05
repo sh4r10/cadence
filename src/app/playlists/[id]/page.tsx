@@ -10,7 +10,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { fetchPlaylist } from "@/lib/data";
+import { fetchPlaylistById, fetchPlaylists } from "@/lib/data";
 import { notFound } from "next/navigation";
 
 export default async function PlaylistPage({
@@ -20,7 +20,10 @@ export default async function PlaylistPage({
 }) {
   const id = params.id;
 
-  const playlist = await fetchPlaylist(id);
+  const [playlist, playlists] = await Promise.all([
+    fetchPlaylistById(id),
+    fetchPlaylists(),
+  ]);
 
   if (!playlist) {
     notFound();
@@ -44,7 +47,7 @@ export default async function PlaylistPage({
           </DialogContent>
         </Dialog>
       </div>
-      <SongsDisplay songs={playlist.songs} />
+      <SongsDisplay songs={playlist.songs} playlists={playlists} />
     </main>
   );
 }

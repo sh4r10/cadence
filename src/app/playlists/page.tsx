@@ -25,6 +25,7 @@ export default async function PlaylistsPage() {
           <DialogContent>
             <DialogHeader>
               <DialogTitle className="mb-6">Create New Playlist</DialogTitle>
+              page
               <DialogDescription asChild>
                 <PlaylistForm />
               </DialogDescription>

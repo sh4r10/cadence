@@ -12,10 +12,14 @@ export const UploadFormSchema = z.object({
   released: z.coerce
     .number()
     .gt(1859, { message: "Year must be greater than 1859" }),
-  playlist: z.string().optional().default(""),
+  playlist: z.string().nullable().default(null),
   file: z.custom<File>((val) => val instanceof File),
 });
 
 export const PlaylistSchema = z.object({
   name: z.string({ invalid_type_error: "Name cannot be empty" }).min(1).max(32),
+});
+
+export const DeleteSongSchema = z.object({
+  song: z.string({ invalid_type_error: "ID cannot be empty" }),
 });
