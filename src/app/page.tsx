@@ -18,7 +18,6 @@ export default async function Home() {
     fetchPlaylists(),
   ]);
 
-  console.log(songs[14]);
   return (
     <main className="w-full py-20">
       <div className="m-auto flex justify-between w-2/3">
